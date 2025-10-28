@@ -1,5 +1,40 @@
 # Introducción a C#
 
+## Primeros pasos: Nociones básicas
+
+### La directiva `using`
+
+````csharp
+using Microsoft.Xna.Framework;
+````
+
+> 🌏 https://dev.to/rafaeljcamara/c-using-keyword-1fih
+
+El uso de `using` es llamado en c# **directive using**. Esta directiva lo que nos permite es **no tener que estar instanciando el objeto que queremos utilizar continuamente**.
+
+Por ejemplo, en este caso: `using Microsoft.Xna.Framework.Graphics;` nos permite utilizar la instrucción que hay más abajo:
+`_graphics = new GraphicsDeviceManager(this);` **sin necesidad de tener que estar haciendo**:
+
+`var graphics = new Microsoft.Xna.Framework.Graphics.GraphicsDeviceManager(this);`
+
+Así que sería como "pre-instanciar" la clase que nos permita luego hacer la instacia per sé.
+
+### La directiva `namespace`
+
+`namespace c_tgc_game;`
+
+Lo que hace es definir como un "scope" al que van a pertenecer las variables. Es decir, que todas las variables que creemos dentro de este `namespace` van a pertenecer únicamente a éste, y si hay otra variable llamada **exactamente igual** en otro `namespace`, **no** presentarán conflictos entre ellos.
+
+### Modificadores de acceso
+
+- Ya sabemos que hay ciertos lenguajes de backend (Java, C#, C++) que son deominados como `lenguajes de programación orientado a ibjetos (POO)`. En este tipo de lenguajes, existe algo llamado `modificadores de acceso` (`public`, `private` y `protected`), que determina el **grado de accesibilidad** de una variable:
+
+- Si una variable es `public` (**pública**) es accesible desde cualquier parte del código. 
+- Si es `private` (**privada**), lo es solo desde el mismo fichero. 
+
+- Si es `protected`, **protegida**, es accesible desde cualquier parte del código, **excepto** desde el mismo fichero.
+
+
 ## 1. Creando una API REST con .NET
 
 Para empezar, la herramienta utilizada para desarrollar aplicaciones web, en el caso de C#, es **ASP.NET**. 
@@ -111,4 +146,7 @@ Cada capa (layer) encapsula todo lo necesario para ese caso: endpoint, handler/c
 
 > 📝 En la fuente de _medium_ mencionada anteriormente, en el apartado de _Folder Structure_, puedes ver un ejemplo tangible de VSA
 
-# c-basic-api-tutorial
+## TODO Instalación Swagger
+
+> 🌏 https://learn.microsoft.com/es-es/aspnet/core/tutorials/min-web-api?view=aspnetcore-9.0&tabs=visual-studio-code#install-swagger-tooling
+
