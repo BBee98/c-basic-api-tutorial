@@ -146,6 +146,99 @@ Cada capa (layer) encapsula todo lo necesario para ese caso: endpoint, handler/c
 
 > 📝 En la fuente de _medium_ mencionada anteriormente, en el apartado de _Folder Structure_, puedes ver un ejemplo tangible de VSA
 
+## 3. Creando nuestra primera ruta.
+
+Vamos a crear la primera ruta donde devolveremos unos datos obtenidos del **INE** (Instituto Nacional de Estadística). 
+
+Lo primero de todo es crear el fichero donde escribiremos el código. Teniendo en cuenta el VSA, vamos a llamar a la carpeta `DatosINE`.
+
+> 🖌️ Es un nombre provisional, susceptible a cambio.
+
+Bien, ahora que sabemos que lo que queremos es crear una ruta `GET` (porque queremos devolver unos datos cuando desde el lado cliente se nos haga una petición), vamos a hacerlo siguiendo el patrón **CQRS**.
+
+### ¿Qué es CQRS?
+
+> 🌏 https://martinfowler.com/bliki/CQRS.html
+
+**CQRS**, que responde a la abreviatura de **Command Query Responsability Segregation**, es un patrón que pretende **separar** las peticiones http en **dos tipos**: 
+1. **Query**, que son aquellas consultas **que no modifican nada**.
+2. **Command**, que son aquellas que **sí** modifican algo.
+
+Por ejemplo: una petición `GET` **siempre** será **query**, porque es una mera consulta de datos; por otro, las peticiones `POST` y `PUT` será consideradas **commands**, porque ambas **modifican** algo (ya sea creando un objeto o actualizándolo).
+
+> 📝 Tienes más información del problema que pretende resolver y su enfoque aquí: https://learn.microsoft.com/es-es/azure/architecture/patterns/cqrs
+
+> ‼️ Es mi primera vez aplicándolo en un lenguaje de backend, con unas reglas léxicas bastante distintas al front, así que no te preocupes si cometes errores 📚.
+
+#### Integrando CQRS
+
+Si buscamos información sobre cómo implementar CQRS en .NET, encontraremos una librería llamada `MediatR`:
+
+> 🌏 https://www.netmentor.es/entrada/tutorial-mediatr-dotnet
+
+Se trata de una librería **muy popular** que se utiliza frecuentemente con este patrón, puesto que permite incluir el patrón `mediator` de una manera escalable y funcional. Sin embargo, para un proyecto pequeño puede resultar *overkill*. Dado que estamos aprendiendo, vamos a intentar gestionar algunos aspectos nosotros mismos para aprovechar y aprender.
+
+> 👩🏼‍💻 Si quieres saber cuáles son las ventajas de implementar CQRS, puedes leer más al respecto aquí:
+> https://learn.microsoft.com/es-es/azure/architecture/patterns/cqrs#benefits-of-cqrs
+
+> 🦄 En esta otra web también está muy bien explicado: https://www.kurrent.io/cqrs-pattern
+
+Tomemos un ejemplo de código de cómo implementar CQRS (según la documentación oficial de Microsoft):
+
+> 🌏 > 🔗 https://learn.microsoft.com/es-es/azure/architecture/patterns/cqrs#example
+
+1. Supongamos que tenemos esta clase simple: 
+
+````csharp
+namespace ReadModel
+{
+  public class ProductInventory
+  {
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int CurrentStock { get; set; }
+  }
+}
+````
+
+Una clase pública que tiene como propiedades un `Id`, `Name` y `CurrentStock`
+
+> 📚 En C# es buena práctica nombrar a las propiedes **públicas** y **protected** utilizando el formato `PascalCase`, mientras que las **privadas** se escriben en minúscula y precedidas por **_**. Ejemplo en código:
+> `````csharp
+> public class Animal
+> {
+>    protected int Age;
+>    public string Name
+>    private string _internalId;
+> }
+> `````
+
+Y lo que queremos es poder hacer una serie de acciones con la clase que hemos creado. En este caso, son productos, así que queremos **añadir productos a nuestro inventario**, por ejemplo.
+La manera común sería hacerlo en un archivo distinto con otro nombre: quizás una clase llamada `ProductInventoryRepository` donde desarrollaramos esa acción, por ejemplificar.
+
+Sin embargo, si seguimos el patrón CQRS, lo adecuado será **crearnos una clase `Handler` que maneje estas vicisitudes**:
+
+
+``````csharp
+public class ProductsCommandHandler :
+    ICommandHandler<AddToInventory>,
+{
+  private readonly IRepository<Product> repository;
+
+  public ProductsCommandHandler (IRepository<Product> repository)
+  {
+    this.repository = repository;
+  }
+
+
+  void Handle (AddToInventory command)
+  {
+    ...
+  }
+}
+``````
+
+
 ## TODO Instalación Swagger
 
 > 🌏 https://learn.microsoft.com/es-es/aspnet/core/tutorials/min-web-api?view=aspnetcore-9.0&tabs=visual-studio-code#install-swagger-tooling
